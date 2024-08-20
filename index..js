@@ -43,8 +43,8 @@ try {
 // Execute the function immediately
 initialLoad();
 
-/**
- * 2. Create an event handler for breedSelect that does the following:
+
+ /* 2. Create an event handler for breedSelect that does the following:
  * - Retrieve information on the selected breed from the cat API using fetch().
  *  - Make sure your request is receiving multiple array items!
  *  - Check the API documentation if you're only getting a single object.
@@ -55,14 +55,42 @@ initialLoad();
  *  - Feel free to edit index.html and styles.css to suit your needs, but be careful!
  *  - Remember that functionality comes first, but user experience and design are important.
  * - Each new selection should clear, re-populate, and restart the Carousel.
- * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
+ * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.*//
  */
+document.getElementById('breedSelect').addEventListnener('change', handleBreedSelect);
 
+async function handleBreedSelect(event) {
+  const breedId = event.target.value;
+  const response = awaitfetch(`https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}&limit=5`);
+  const data = await response.json();
+
+  Carousel.innerHTML = ''; // Clear the carousel
+
+  data.forEach(item => {
+    const img = document.createElement('img');
+    img.src = item.url;
+    Carousel.appendChild(img);
+  });
+
+  const infoDump = document.getElementsById('infoDump');
+      infoDump.innerHTML = '';// Clear the info section
+      const breedInfo = data[0].breeds[0];
+      const info = document.createElement('div');
+      info.innerHTML = '<h2>${breedInfo.name}</h2><p>${breedInfo.description}</p>
+      <p>Temperament:${breedInfo.temperament} </p>';
+      infoDump.appendChild(info);
+} 
+
+initialLoad();
+document.getElementById('breedSelect').addEventListner('change',handleBreedSelect);
 
 
  //* 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
- */
-/**
+ 
+ fetch('https://api.thecatapi.com/v1/breeds')
+ .then(response => response.json())
+ .then(data => console.log(data));
+/** 
  * 4. Change all of your fetch() functions to axios!
  * - axios has already been imported for you within index.js.
  * - If you've done everything correctly up to this point, this should be simple.
@@ -70,7 +98,28 @@ initialLoad();
  * - Hint: Axios has the ability to set default headers. Use this to your advantage
  *   by setting a default header with your API key so that you do not have to
  *   send it manually with all of your requests! You can also set a default base URL!
- */
+*/
+
+axios.defaults.baseURL = 'https://api.thecatapi.com/v1';
+axios.defaults.headers.common['x-api-key'] = 'YOUR_API_KEY';
+
+async function initialLoad() {
+try{
+  const response = await axios.get('/breeds');
+  const breedSelect = document.getElementById('breedSelect');
+
+  breeds.forEach(breed => {
+    const option = document.createdElement('option');
+    option. value = breed.id;
+    option.textContent = breed.name;
+    breedSelect.appendChild(option);
+        });
+ }catch (error) {
+  console.error('Error fetching breeds:', error);
+ }
+}
+
+initialLoad();
 /**
  * 5. Add axios interceptors to log the time between request and response to the console.
  * - Hint: you already have access to code that does this!
