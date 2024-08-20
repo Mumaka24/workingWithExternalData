@@ -15,12 +15,33 @@ const API_KEY = "";
 
 /**
  * 1. Create an async function "initialLoad" that does the following:
+ as
  * - Retrieve a list of breeds from the cat API using fetch().
  * - Create new <options> for each of these breeds, and append them to breedSelect.
  *  - Each option should have a value attribute equal to the id of the breed.
  *  - Each option should display text equal to the name of the breed.
- * This function should execute immediately.
- */
+ * This function should execute immediately.*//
+
+ 
+async function initialLoad() {
+const response = await fetch('https://api.thecatapi.com/v1/breeds');
+const breeds = await response.json();
+const breedSelect = document.getElementById('breedSelect');
+breeds.forEach(breed => {const option = document.createElement('option');
+option.value = breed.id;
+option.textcontent = breed.name;
+
+breedSelect.appendChild(option);
+});
+
+try {
+  // Fetch and process breeds
+  } catch (error) {
+    console.error('Error fetching breeds:', error);
+  }
+}
+// Execute the function immediately
+initialLoad();
 
 /**
  * 2. Create an event handler for breedSelect that does the following:
@@ -37,8 +58,9 @@ const API_KEY = "";
  * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.
  */
 
-/**
- * 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
+
+
+ //* 3. Fork your own sandbox, creating a new one named "JavaScript Axios Lab."
  */
 /**
  * 4. Change all of your fetch() functions to axios!
