@@ -158,6 +158,56 @@ axios.interceptor.request.use(response =>{
  *   with for future projects.
  */
 
+axios.interceptor.request.use(config => {
+  const progressBar = document.getElementById('progressBar');
+  progressBar.style.width = '0%';
+  //Reset the progress bar
+  return config;
+}, error =>{
+  return Promise.reject(error);
+});
+
+function updateProgress(event) {
+  console.log(event);//Log the ProgressEvent object to see its structure
+
+  if(event.lengthComputable) {
+    const percentComplete = (event.loaded /event.total) * 100;
+    const progressBar = document.getElementById('progressBar');
+
+    progressBar.style.width = percentComplete + '%'; // Update the progress bar
+  }
+}
+async function handleBreedSelect(event) { 
+  const breedId = event.target.value;
+  const response = await axios.get(`/images/search?breed_ids=${breedId}&limit=5`, {
+    onDownloadProgress: updateProgress
+    });
+    const data = response.data;
+
+    const carousel = document.getElementById('carousel');
+      carousel.innerHTML = '';// clear the carousel
+
+      data.forEach(item => {
+        const img = document.createElement('img');
+        img.src = item.url;
+        carousel.appendChild(img);
+     });
+     const infoDump = document.getElementById('infoDump');
+    infoDump.innerHTML = ''; // Clear the info section
+
+    const breedInfo = data[0].breeds[0];
+    const info = document.createElement('div');
+    info.innerHTML = `
+        <h2>${breedInfo.name}</h2>
+        <p>${breedInfo.description}</p>
+        <p>Temperament: ${breedInfo.temperament}</p>
+    `;
+    infoDump.appendChild(info);
+}
+
+
+
+
 /**
  * 7. As a final element of progress indication, add the following to your axios interceptors:
  * - In your request interceptor, set the body element's cursor style to "progress."
