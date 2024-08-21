@@ -127,6 +127,21 @@ initialLoad();
  * - As an added challenge, try to do this on your own without referencing the lesson material.
  */
 
+axios. defaults.baseURL = 'https://api.thecatapi.com/v1';
+axios.defaults.headers.common['x-api-key'] = 'YOUR_API_KEY';
+
+//add requeste interceptor
+axios.interceptor.request.use(response =>{
+  const endTime = new Date();
+  const startTime = response.config.metadata.startTime;
+  const duration = endTime - startTime;
+  console.log('Request completed in:', duration, 'ms');
+  return response;
+}, error =>{
+  return Promise.reject(error);
+});
+  
+
 /**
  * 6. Next, we'll create a progress bar to indicate the request is in progress.
  * - The progressBar element has already been created for you.
