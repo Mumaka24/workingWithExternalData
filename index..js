@@ -20,7 +20,7 @@ const API_KEY = "";
  * - Create new <options> for each of these breeds, and append them to breedSelect.
  *  - Each option should have a value attribute equal to the id of the breed.
  *  - Each option should display text equal to the name of the breed.
- * This function should execute immediately.*//
+ * This function should execute immediately.*/
 
  
 async function initialLoad() {
@@ -55,8 +55,8 @@ initialLoad();
  *  - Feel free to edit index.html and styles.css to suit your needs, but be careful!
  *  - Remember that functionality comes first, but user experience and design are important.
  * - Each new selection should clear, re-populate, and restart the Carousel.
- * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.*//
- */
+ * - Add a call to this function to the end of your initialLoad function above to create the initial carousel.*/
+
 document.getElementById('breedSelect').addEventListnener('change', handleBreedSelect);
 
 async function handleBreedSelect(event) {
@@ -76,8 +76,8 @@ async function handleBreedSelect(event) {
       infoDump.innerHTML = '';// Clear the info section
       const breedInfo = data[0].breeds[0];
       const info = document.createElement('div');
-      info.innerHTML = '<h2>${breedInfo.name}</h2><p>${breedInfo.description}</p>
-      <p>Temperament:${breedInfo.temperament} </p>';
+      info.innerHTML = '<h2>${breedInfo.name}</h2><p>${breedInfo.description}</p>'
+      <p>Temperament;'${breedInfo.temperament}</p>'
       infoDump.appendChild(info);
 } 
 
@@ -190,21 +190,8 @@ async function handleBreedSelect(event) {
       data.forEach(item => {
         const img = document.createElement('img');
         img.src = item.url;
-        carousel.appendChild(img);
-     });
-     const infoDump = document.getElementById('infoDump');
-    infoDump.innerHTML = ''; // Clear the info section
-
-    const breedInfo = data[0].breeds[0];
-    const info = document.createElement('div');
-    info.innerHTML = `
-        <h2>${breedInfo.name}</h2>
-        <p>${breedInfo.description}</p>
-        <p>Temperament: ${breedInfo.temperament}</p>
-    `;
-    infoDump.appendChild(info);
-}
-
+        carousel
+      })
 
 
 
@@ -213,6 +200,32 @@ async function handleBreedSelect(event) {
  * - In your request interceptor, set the body element's cursor style to "progress."
  * - In your response interceptor, remove the progress cursor style from the body element.
  */
+
+axios.interceptor.request.use(config =>{
+  document.body.style.cursor = 'progress';// Set cursor to ptogress
+   const progressBar = document.getElementsById('progressBar');
+   progressBar.style.width = '0%';
+   // Reset the progress bar
+      return config;
+}, error =>{
+  return Promise.reject(error);
+  });
+
+  axios.interceptor.response.use(response => {
+    document.body.style.cursor = 'default';
+    // reset cursor to default
+    const endTime = new Date();
+    const startTime = response.config.metadata.startTime;
+    const duration = endTime - startTime;
+    console.log('Request completed in:', duration, 'ms');
+    return response;
+  }, error => {
+    document.body.style.cursor = 'default'; // Reset cursor to default even on error
+    return Promise.reject(error);
+});
+
+  }
+
 /**
  * 8. To practice posting data, we'll create a system to "favourite" certain images.
  * - The skeleton of this function has already been created for you.
@@ -224,9 +237,29 @@ async function handleBreedSelect(event) {
  *   you delete that favourite using the API, giving this function "toggle" functionality.
  * - You can call this function by clicking on the heart at the top right of any image.
  */
-export async function favourite(imgId) {
-  // your code here
+import axios from 'axios';
+
+export async function toggleFavorite(imageId){
+
+  const response = await axios.get('/favourites');
+  const favorites = response.data;
+  const favorite = favorite.find(fav => fav.image_id ===imageId);
+
+  if (favorite) { await
+    axios.delete('/favorite/${favorite.id}');
+    console.log('Remove from favorites:', favorite.id);
+
+  } else {
+    await
+  axios.post('/favourites', {
+    image_id : imageId});
+  console.log('Added to favorites:', imageId);
+  }
+} trycatch (error);
+ {
+  console.error('Error toggling favorite:', error);
 }
+ 
 
 /**
  * 9. Test your favourite() function by creating a getFavourites() function.
@@ -237,7 +270,8 @@ export async function favourite(imgId) {
  *    If that isn't in its own function, maybe it should be so you don't have to
  *    repeat yourself in this section.
  */
-
+  
+        
 /**
  * 10. Test your site, thoroughly!
  * - What happens when you try to load the Malayan breed?
